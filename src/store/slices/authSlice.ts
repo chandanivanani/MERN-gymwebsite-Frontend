@@ -30,6 +30,23 @@ export const signupUser = createAsyncThunk<
     }
 )
 
+export const loginUser = createAsyncThunk<
+       any,
+       any,
+       {rejectValue: string}
+    >(
+    "auth/loginUser",
+    async (credentials , {rejectWithValue}) => {
+        try {
+            const response = await axios.post(LOGIN_URL, credentials);
+            localStorage.setItem("token", response.data.token);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || "Login failed");
+        }
+    }
+)
+
 const initialState: AuthState = {
     user: null,
     token: null,
@@ -51,15 +68,26 @@ const authSlice = createSlice({
         builder
             .addCase(signupUser.pending, (state) => {
              state.loading = true;
-             })
+            })
              .addCase(signupUser.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false;
-                state.user = action.payload;
-             })
+                state.user = action.payload.user;
+            })
              .addCase(signupUser.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.error = action.payload || "an error occurred";
                 state.loading = false;
-             });
+            })
+            .addCase(loginUser.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.token = action.payload.token;
+            })
+            .addCase(loginUser.rejected, (state, action: PayloadAction<string | undefined>) => {
+                state.error = action.payload || "an error occurred";
+                state.loading = false;
+            })
     },
 });
 

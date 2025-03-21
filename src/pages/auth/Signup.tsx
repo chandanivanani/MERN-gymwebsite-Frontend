@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { FaEye, FaEyeSlash } from "react-icons/fa";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Header from "../../components/LandingPage/Header";
 import Footer from "../../components/LandingPage/Footer";
 import imagesignup from "../../images/about.jpg";
@@ -60,27 +62,27 @@ const Signup = () => {
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword); // toggle the showPassword state
-  }
+  };
 
   const handleToggleConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword); // toggle the showConfirmPassword state
-  }
+  };
 
   const onSubmit = async (userData: FormData) => {
-    const {confirmPassword, ...FormData } = userData;
+    const { confirmPassword, ...FormData } = userData;
 
     try {
-        const resultAction = await dispatch(signupUser(FormData)).unwrap();
-        console.log("signup data:",resultAction);
-        toast.success("Signup successful!");
-        navigate("/login"); // dispatch the signupUser action
+      const resultAction = await dispatch(signupUser(FormData)).unwrap();
+      console.log("signup data:", resultAction);
+      toast.success("Signup successful!");
+      navigate("/login"); // dispatch the signupUser action
     } catch (error: any) {
-        console.error(error);
-        if(error.response && error.response.status === 409) {
-            toast.error(error.response.data.message);  // show toast message if username already exists
-        }
+      console.error(error);
+      if (error.response && error.response.status === 409) {
+        toast.error(error.response.data.message); // show toast message if username already exists
+      }
     }
-  }
+  };
 
   return (
     <>
@@ -186,12 +188,12 @@ const Signup = () => {
                     //show eye icon in the input field
                     <div className="absolute items-center end-0 top-0 mt-3 justify-center pr-5">
                       {showPassword ? (
-                        <FaEye
+                        <VisibilityIcon
                           className="text-gray-400 w-5 h-5 cursor-pointer"
                           onClick={handleTogglePassword}
                         />
                       ) : (
-                        <FaEyeSlash
+                        <VisibilityOffIcon
                           className="text-gray-400 w-5 h-5 cursor-pointer"
                           onClick={handleTogglePassword}
                         />
@@ -224,12 +226,12 @@ const Signup = () => {
                     />
                     <div className="absolute items-center end-0 top-0 mt-3 justify-center pr-5">
                       {showConfirmPassword ? (
-                        <FaEye
+                        <VisibilityIcon
                           className="text-gray-400 w-5 h-5 cursor-pointer"
                           onClick={handleToggleConfirmPassword}
                         />
                       ) : (
-                        <FaEyeSlash
+                        <VisibilityOffIcon
                           className="text-gray-400 w-5 h-5 cursor-pointer"
                           onClick={handleToggleConfirmPassword}
                         />
