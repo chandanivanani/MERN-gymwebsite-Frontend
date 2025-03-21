@@ -4,12 +4,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Header from "../../components/LandingPage/Header";
 import Footer from "../../components/LandingPage/Footer";
 import imagesignup from "../../images/about.jpg";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { signupUser } from "../../store/slices/authSlice";
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -43,6 +45,7 @@ interface FormData {
 }
 
 const Signup = () => {
+  const dispatch = useDispatch<AppDispatch>();
   let navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -63,11 +66,14 @@ const Signup = () => {
     setShowConfirmPassword(!showConfirmPassword); // toggle the showConfirmPassword state
   }
 
-  const onSubmit = async (data: FormData) => {
-    const {confirmPassword, ...formData } = data;
+  const onSubmit = async (userData: FormData) => {
+    const {confirmPassword, ...FormData } = userData;
 
     try {
-        
+        const resultAction = await dispatch(signupUser(FormData)).unwrap();
+        console.log("signup data:",resultAction);
+        toast.success("Signup successful!");
+        navigate("/login"); // dispatch the signupUser action
     } catch (error: any) {
         console.error(error);
         if(error.response && error.response.status === 409) {
