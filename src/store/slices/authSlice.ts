@@ -7,11 +7,34 @@ const LOGIN_URL= `${API_BASE_URL}auth/login`;
 const FORGOT_PASSWORD_URL= `${API_BASE_URL}auth/forgot`;
 const REFRESH_TOKEN_URL= `${API_BASE_URL}auth/refresh`;
 
+interface User {
+    username: string;
+    email: string;      
+    role: number;
+    token:string;
+    image?:string;
+}
+
 interface AuthState {
-    user: any | null;
-    token: string | null;
+    user: User | null;
     error: string | null;
     loading: boolean;
+}
+
+interface LoginData {
+    email: string;
+    password: string;   
+}
+
+interface LoginResponse {
+    token: string;
+    user: {
+        role: number;
+        email: string;
+        firstname: string;
+        lastname: string;
+        profilePhoto? : string;
+    };
 }
 
 export const signupUser = createAsyncThunk<
@@ -31,14 +54,17 @@ export const signupUser = createAsyncThunk<
 )
 
 export const loginUser = createAsyncThunk<
-       any,
-       any,
+         any,
+        { email: string; password: string; },
        {rejectValue: string}
     >(
     "auth/loginUser",
-    async (credentials , {rejectWithValue}) => {
+    async (data : { email, password }, {rejectWithValue}) => {
         try {
-            const response = await axios.post(LOGIN_URL, credentials);
+            const response = await axios.post(LOGIN_URL, credentials,{
+                withCredentials: true
+            });
+
             localStorage.setItem("token", response.data.token);
             return response.data;
         } catch (error: any) {
@@ -49,7 +75,6 @@ export const loginUser = createAsyncThunk<
 
 const initialState: AuthState = {
     user: null,
-    token: null,
     error: null,
     loading: false,
 };
@@ -60,7 +85,7 @@ const authSlice = createSlice({
     reducers: {
         logout: (state) => {
             state.user = null;
-            state.token = null;
+            state.User.token = null;
             localStorage.removeItem("token");
         },
     },
