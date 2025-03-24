@@ -11,7 +11,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Header from "../../components/LandingPage/Header";
 import Footer from "../../components/LandingPage/Footer";
 import imagesignup from "../../images/about.jpg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { signupUser } from "../../store/slices/authSlice";
 
@@ -29,8 +29,8 @@ const schema = yup.object().shape({
     .string()
     .required("Password is required")
     .matches(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-      "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number"
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*!]).{8,}$/,
+      "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number and special character"
     ),
   confirmPassword: yup
     .string()
@@ -69,10 +69,10 @@ const Signup = () => {
   };
 
   const onSubmit = async (userData: FormData) => {
-    const { confirmPassword, ...FormData } = userData;
+    const { confirmPassword, ...formData } = userData;
 
     try {
-      const resultAction = await dispatch(signupUser(FormData)).unwrap();
+      const resultAction = await dispatch(signupUser(formData)).unwrap();
       console.log("signup data:", resultAction);
       toast.success("Signup successful!");
       navigate("/login"); // dispatch the signupUser action
@@ -88,6 +88,7 @@ const Signup = () => {
     <>
       <Header />
       <div className="min-h-screen flex items-center justify-center mt-10">
+        {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img
             src={imagesignup}
@@ -95,6 +96,8 @@ const Signup = () => {
             className="w-full h-full object-cover opacity-40 brightness-50"
           />
         </div>
+
+        {/* Signup form */}
         <div className="relative mx-auto w-full mt-20 max-w-xl">
           <div className="bg-surface-200 shadow-inner shadow-neutral-200 ml-2 mr-2 rounded-2xl px-8 pt-6 pb-8 mb-4">
             <div className="text-center">
@@ -185,7 +188,7 @@ const Signup = () => {
                       className="border text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Enter password"
                     />
-                    //show eye icon in the input field
+                    {/* //show eye icon in the input field */}
                     <div className="absolute items-center end-0 top-0 mt-3 justify-center pr-5">
                       {showPassword ? (
                         <VisibilityIcon
