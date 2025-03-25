@@ -1,9 +1,36 @@
-import { use } from 'react';
-import axios from "axios";
+import axios from "./axios";
 import {useNavigate} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout,updateToken } from "../store/slices/authSlice";
 
 const useRefreshToken = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    // const { token } = useSelector((state:any) => state.auth);
+
+    const refresh = async () => {
+        try {
+            const response = await axios.get("auth/refresh",{
+                withCredentials:true,
+            });
+
+            console.log("Refreshed token:",response.data);
+            const newToken = response.data.data;
+
+            if(newToken){
+                dispatch(updateToken(newToken));
+                return newToken;
+            }
+        } catch (error: any) {
+            console.error("Token refresh failed:",error);
+            if([400, 401, 403].includes(error.response?.status)) {
+                dispatch(logout());
+                navigate("/login");
+            }
+            return null;
+        }
+    };
+    return refresh;
 };
 
 export default useRefreshToken;

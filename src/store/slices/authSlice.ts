@@ -1,11 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_BASE_URL = process.env.REACT_APP_API;
-const SIGNUP_URL = `${API_BASE_URL}auth/signup`;
-const LOGIN_URL = `${API_BASE_URL}auth/login`;
-const FORGOT_PASSWORD_URL= `${API_BASE_URL}auth/forgot`;
-// const REFRESH_TOKEN_URL= `${API_BASE_URL}auth/refresh`;
+import axios from "../../axios/axios";
 
 interface AuthState {
   user: any | null;
@@ -18,7 +12,7 @@ const initialState: AuthState = {
   user: null,
   error: null,
   loading: false,
-  token: null,
+  token: localStorage.getItem("token") || null,
 };
 
 interface SignupData {
@@ -43,7 +37,7 @@ export const signupUser = createAsyncThunk(
   "auth/signupUser",
   async (userData: SignupData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(SIGNUP_URL, userData);
+      const response = await axios.post("auth/signup", userData);
       console.log(response.data);
       return response.data;
     } catch (error: any) {
@@ -56,24 +50,18 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials: LoginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(LOGIN_URL, credentials, {
+      const response = await axios.post("auth/login", credentials, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
 
-        console.log("Slice-Login res:",response.data);
+        // console.log("Slice-Login res:",response.data);
 
-      const { token } = response.data;
-      const { role, email, firstname, lastname, profilephoto } =
-        response.data.user;
-      const username = firstname + " " + lastname;
+      const { token,user } = response.data;
       if (response.status === 200) {
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({ token, role, email, username, profilephoto })
-        );
+        window.localStorage.setItem("token",token);
       }
-      return response.data;
+      return { user,token };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "login failed");
     }
@@ -84,7 +72,7 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (data : ForgotData, {rejectWithValue}) => {
       try {
-        const response = await axios.post(FORGOT_PASSWORD_URL, data);
+        const response = await axios.post("auth/forgot", data);
         console.log("forgot slice",response);
         }
       
@@ -98,9 +86,11 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    resetError: (state) => {
-      state.error = null;
+    updateToken: (state,action) => {
+         state.token = action.payload;
+         localStorage.setItem("token",action.payload);
     },
+    
     logout: (state) => {
       localStorage.removeItem("token");
       state.user = null;
@@ -149,6 +139,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetError } = authSlice.actions;
-export const { logout } = authSlice.actions;
+export const { logout ,updateToken } = authSlice.actions;
 export default authSlice.reducer;
