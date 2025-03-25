@@ -43,10 +43,9 @@ const ForgotPass = () => {
       const response = await dispatch(forgotPassword(data));
       console.log("forgot page", response);
 
-      // if(response.status === 200){
+      if(response.meta.requestStatus === "fulfilled"){
         navigate("/login");
-      // }
-      
+      }
     } catch (error: any) {
       console.error(error);
       if (error.response && error.response.status === 500) {

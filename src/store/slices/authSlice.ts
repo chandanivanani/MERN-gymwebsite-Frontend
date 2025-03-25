@@ -86,10 +86,12 @@ export const forgotPassword = createAsyncThunk(
       try {
         const response = await axios.post(FORGOT_PASSWORD_URL, data);
         console.log("forgot slice",response);
-      } catch (error: any) {
+        }
+      
+      catch (error: any) {
          return rejectWithValue(error.response?.data?.message || "forgot password failed");
       }
-  }
+    }
 );
 
 const authSlice = createSlice({
@@ -138,7 +140,7 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        // state.user = action.payload;
       })
       .addCase(forgotPassword.rejected, (state,action) => {
          state.loading = false;
