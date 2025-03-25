@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import imagelogin from "../../images/about.jpg";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
 import Header from "../../components/LandingPage/Header";
 import Footer from "../../components/LandingPage/Footer";
@@ -14,7 +13,11 @@ import { AppDispatch } from "../../store/store";
 
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup.string().required("Password is required"),
+  password: yup.string().required("Password is required")
+  .matches(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*!]).{8,}$/,
+    "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number and special character"
+  ),
   confirmPassword: yup
     .string()
     .required("confirm password is required")
