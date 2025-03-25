@@ -4,6 +4,7 @@ import "./App.css";
 import { Toaster } from "react-hot-toast";
 import Loading from "./components/dashboard/common/Loading";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import ForgotPass from "./pages/auth/ForgotPass";
 
 const LandingPage = React.lazy(() => import("./pages/home/LandingPage"));
 const SignUp = React.lazy(() => import("./pages/auth/Signup"));
@@ -18,10 +19,11 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
 
-          {/* ===========================================auth========================= */}
+          {/* ===========================================auth============================ */}
 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot" element={<ForgotPass />} />
         </Routes>
       </Suspense>
     </>

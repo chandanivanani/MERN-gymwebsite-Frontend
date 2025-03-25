@@ -50,7 +50,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormInputs) => {
     try {
       const resultAction = dispatch(loginUser(data));
-      // console.log("login data:",resultAction);
+      console.log("login data:", resultAction);
       toast.success("Login successful");
 
       if (auth.user.role === 1) {

@@ -4,7 +4,7 @@ import axios from "axios";
 const API_BASE_URL = process.env.REACT_APP_API;
 const SIGNUP_URL = `${API_BASE_URL}auth/signup`;
 const LOGIN_URL = `${API_BASE_URL}auth/login`;
-// const FORGOT_PASSWORD_URL= `${API_BASE_URL}auth/forgot`;
+const FORGOT_PASSWORD_URL= `${API_BASE_URL}auth/forgot`;
 // const REFRESH_TOKEN_URL= `${API_BASE_URL}auth/refresh`;
 
 interface AuthState {
@@ -33,11 +33,18 @@ interface LoginData {
   password: string;
 }
 
+interface ForgotData {
+  email:string;
+  password:string;
+  confirmPassword:string;
+}
+
 export const signupUser = createAsyncThunk(
   "auth/signupUser",
   async (userData: SignupData, { rejectWithValue }) => {
     try {
       const response = await axios.post(SIGNUP_URL, userData);
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "signup failed");
@@ -54,7 +61,7 @@ export const loginUser = createAsyncThunk(
         withCredentials: true,
       });
 
-      //    console.log("Slice-Login res:",response.data);
+        console.log("Slice-Login res:",response.data);
 
       const { token } = response.data;
       const { role, email, firstname, lastname, profilephoto } =
@@ -70,6 +77,18 @@ export const loginUser = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "login failed");
     }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (data : ForgotData, {rejectWithValue}) => {
+      try {
+        const response = await axios.post(FORGOT_PASSWORD_URL, data);
+        console.log("forgot slice",response);
+      } catch (error: any) {
+         return rejectWithValue(error.response?.data?.message || "forgot password failed");
+      }
   }
 );
 
@@ -112,7 +131,19 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(forgotPassword.rejected, (state,action) => {
+         state.loading = false;
+         state.error = action.payload as string;
+      })
   },
 });
 
