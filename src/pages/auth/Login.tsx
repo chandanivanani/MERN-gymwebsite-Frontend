@@ -33,7 +33,7 @@ interface LoginFormInputs {
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: any) => state.auth.user);
-  console.log("logged in user",user);
+  // console.log("logged in user",user);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -50,17 +50,12 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
-      const resultAction = dispatch(loginUser(data));
+      const resultAction = await dispatch(loginUser(data)).unwrap();
       // console.log("login data:", resultAction);
       toast.success("Login successful");
 
-      if(!user) {
-        console.error("User data is missing");
-        return;
-      }
-
-      const dashboardPath = user.role === 1 ? "/admin" : "/user";
-      navigate(dashboardPath);
+      if(resultAction.user)
+      navigate(resultAction?.user?.role === 1 ? "/admin" : "/user");
     } catch (error: any) {
       console.error("Login error:", error);
       if (error.response && error.response.status === 500) {
