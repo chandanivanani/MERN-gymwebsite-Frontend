@@ -1,4 +1,4 @@
-import { axiosPrivate } from './axios';
+import  axios from './axios';
 import {useNavigate} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout,updateToken } from "../store/slices/authSlice";
@@ -9,7 +9,9 @@ const useRefreshToken = () => {
 
     const refresh = async () => {
         try {
-            const response = await axiosPrivate.get("auth/refresh");
+            const response = await axios.get("auth/refresh",{
+                withCredentials: true
+            });
 
             console.log("Refreshed token:",response.data);
             const newToken = response.data.data;

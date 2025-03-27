@@ -6,6 +6,7 @@ interface AuthState {
   error: string | null;
   loading: boolean;
   token: string | null;
+  image: string | null;
 }
 
 const initialState: AuthState = {
@@ -13,6 +14,7 @@ const initialState: AuthState = {
   error: null,
   loading: false,
   token: localStorage.getItem("token") || null,
+  image: localStorage.getItem("image") || null
 };
 
 interface SignupData {
@@ -56,10 +58,15 @@ export const loginUser = createAsyncThunk(
       });
 
         // console.log("Slice-Login res:",response.data);
-
+      const {role , email , firstname , lastname , profilePhoto} = response.data.user;
+      const username = firstname + " " + lastname;
+      
       const { token,user } = response.data;
       if (response.status === 200) {
         window.localStorage.setItem("token",token);
+        window.localStorage.setItem("image",user.image);
+        window.localStorage.setItem("user",JSON.stringify({role,email,username,profilePhoto}),
+      );
       }
       return { user,token };
     } catch (error: any) {
@@ -90,11 +97,16 @@ const authSlice = createSlice({
          state.token = action.payload;
          localStorage.setItem("token",action.payload);
     },
-    
+    updateImage: (state,action) => {
+       state.image = action.payload;
+       localStorage.setItem("image",action.payload);
+    },
     logout: (state) => {
       localStorage.removeItem("token");
+      localStorage.removeItem("image");
       state.user = null;
       state.token = null;
+      state.image = null;
     },
   },
   extraReducers: (builder) => {
@@ -119,6 +131,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.image = action.payload.user.image;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -139,5 +152,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout ,updateToken } = authSlice.actions;
+export const { logout ,updateToken, updateImage } = authSlice.actions;
 export default authSlice.reducer;

@@ -87,7 +87,6 @@ const ForgotPass = () => {
                   {...register("email")}
                   className="text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 foucs:border-blue-500"
                   placeholder="john.doe@company.com"
-                  required
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm italic">
@@ -109,7 +108,6 @@ const ForgotPass = () => {
                   {...register("password")}
                   className="text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="•••••••••"
-                  required
                 />
                 {errors.password && (
                   <p className="text-red-500 text-sm italic">
@@ -131,7 +129,6 @@ const ForgotPass = () => {
                   {...register("confirmPassword")}
                   className="text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                   placeholder="•••••••••"
-                  required
                 />
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm italic">
