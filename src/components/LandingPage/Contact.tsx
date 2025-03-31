@@ -1,9 +1,10 @@
 import React from 'react'
+type Props = {}
 
-function Contact() {
+const Contact = (props: Props) => {
   return (
     <div>
-      
+      Contact
     </div>
   )
 }

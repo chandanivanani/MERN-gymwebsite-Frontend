@@ -9,7 +9,7 @@ type Props = {}
 
 const Footer = (props: Props) => {
   return (
-    <>
+    <div>
       <footer>
         <div className='w-full max-w-screen-xl mx-auto pt-4 px-8 pb-4'>
           <div className='sm:flex sm:items-center sm:justify-between'>
@@ -45,7 +45,7 @@ const Footer = (props: Props) => {
             </div>
         </div>
       </footer>
-    </>
+    </div>
   )
 }
 
