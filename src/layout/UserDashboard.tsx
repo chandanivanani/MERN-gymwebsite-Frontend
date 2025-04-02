@@ -34,7 +34,7 @@ const UserDashboard = () => {
             <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
 
                 {/*==================== Header Start =================*/}
-                <Navbar />
+                {/* <Navbar /> */}
                 {/*==================== Header End ===================*/}
 
                 {/*=================Main Content Start =================*/}
