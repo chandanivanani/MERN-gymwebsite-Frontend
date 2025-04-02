@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerClose, menuIt
                <img src={logo} alt="logo" className="h-12" />
 
         {/* Close button to close the mobile drawer */}
-            <button>
+            <button className="md:hidden mr-4 text-white" onClick={handleDrawerClose}>
                 <CloseIcon/>
             </button>
         </div>
