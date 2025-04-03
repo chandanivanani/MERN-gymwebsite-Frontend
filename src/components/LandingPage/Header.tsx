@@ -109,7 +109,7 @@ const Header = () => {
                   to="about"
                   smooth={true}
                   duration={500}
-                  className="block py-2 px-3 text-white rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-gray-200 cur md:p-0"
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-gray-200 cursor-pointer md:p-0"
                 >
                   About
                 </Link>
@@ -119,7 +119,7 @@ const Header = () => {
                   to="features"
                   smooth={true}
                   duration={500}
-                  className="block py-2 px-3 text-white rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-gray-200 cur md:p-0"
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-gray-200 cursor-pointer md:p-0"
                 >
                   Features
                 </Link>

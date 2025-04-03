@@ -1,4 +1,3 @@
-import useAxiosPrivate from "../../axios/useAxiosPrivate";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface UserData {
@@ -21,11 +20,11 @@ interface UserState {
 
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
-  async (_, { rejectWithValue }) => {
+  async (axiosPrivate:any , { rejectWithValue }) => {
+
     try {
-      const axiosPrivate = useAxiosPrivate();
-      const response = await axiosPrivate.get("user/profile");
-      console.log("user profileSlice", response.data.data);
+      const response = await axiosPrivate.get("/user/profile");
+      // console.log("user profileSlice", response.data.data);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -37,18 +36,47 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
-  async (updatedData: UserData, { rejectWithValue }) => {
+  async ({ data, axiosPrivate }: {data:UserData; axiosPrivate:any }, { rejectWithValue }) => {
+
     try {
-      const axiosPrivate = useAxiosPrivate();
-      const response = await axiosPrivate.put("user/updatedata", updatedData);
+      const response = await axiosPrivate.put("user/updatedata", data);
       console.log("update UserProfile Data:", response.data.data);
-      return response.data.data;
+      // if (response.status === 200) {
+        return response.data.data;
+      // }
+      // return rejectWithValue("Profile update failed.Please try again");
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "failed to Updating user profile"
       );
     }
   }
+);
+
+export const uploadPhoto = createAsyncThunk(
+  "user/uploadPhoto",
+  async({formData,axiosPrivate} : {formData:FormData; axiosPrivate:any}, {rejectWithValue }) => {
+    try {
+      const response = await axiosPrivate.post("user/uploadphoto", formData, {
+        headers: {"Content-Type" : "multipart/form-data" },
+      });
+      return response.data.data;
+    }catch(error:any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to upload photo");
+    }
+  }
+);
+
+export const deletePhoto = createAsyncThunk(
+    "user/deletePhoto",
+    async (axiosPrivate:any, {rejectWithValue}) => {
+      try  {
+        await axiosPrivate.delete("user/deletephoto");
+        return null;
+      } catch (error:any) {
+        return rejectWithValue(error.response?.data?.message || "Failed to delete photo");
+      }
+    }
 );
 
 const initialState: UserState = {
@@ -61,9 +89,12 @@ const userProfileSlice = createSlice({
   name: "userProfile",
   initialState,
   reducers: {
-    resetUserData: (state) => {
-      state.userData = initialState.userData;
-    },
+    // resetUser: (state) => {
+    //   state.userData = null;
+    // },
+    // setUser: (state, action) => {
+    //   state.userData = action.payload;
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -90,9 +121,37 @@ const userProfileSlice = createSlice({
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(uploadPhoto.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadPhoto.fulfilled, (state,action) => {
+        state.loading = false;
+        if(state.userData) {
+          state.userData.profilePhoto = action.payload;
+        }
+      })
+      .addCase(uploadPhoto.rejected, (state,action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deletePhoto.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePhoto.fulfilled, (state) => {
+        state.loading = false;
+        if(state.userData) {
+          state.userData.profilePhoto = "";
+        }
+      })
+      .addCase(deletePhoto.rejected, (state,action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
 export default userProfileSlice.reducer;
-export const { resetUserData } = userProfileSlice.actions;
+// export const { resetUser, setUser } = userProfileSlice.actions;

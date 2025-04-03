@@ -1,23 +1,23 @@
-//attach token interceptors
-
-import { axiosPrivate } from "./axios";
 import { useEffect } from "react";
-import useRefreshToken from "./useRefreshToken";
-import { useDispatch , useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateToken } from "../store/slices/authSlice";
+import useRefreshToken from "./useRefreshToken";
+import { axiosPrivate } from "./axios"; // Axios instance
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
     const dispatch = useDispatch();
-    const {token} = useSelector((state:any) => state.auth);
+    const { token } = useSelector((state: any) => state.auth);
 
     useEffect(() => {
+        // console.log("Axios Private Hook Mounted, Current Token:", token);
+
         const requestIntercept = axiosPrivate.interceptors.request.use(
             (config) => {
-               if (!config.headers["Authorization"]) {
-                config.headers["Authorization"] = `Bearer ${token}`;
-               }
-               return config;
+                if (!config.headers["Authorization"]) {
+                    config.headers["Authorization"] = `Bearer ${token}`;
+                }
+                return config;
             },
             (error) => Promise.reject(error)
         );
@@ -26,13 +26,13 @@ const useAxiosPrivate = () => {
             (response) => response,
             async (error) => {
                 const prevRequest = error?.config;
-                if(error?.response?.status === 401 && !prevRequest?.sent) {
-                    prevRequest.sent = true;
-                    const newToken = await refresh();
-                    if(newToken) {
-                        dispatch(updateToken(newToken));
-                        prevRequest.headers["Authorization"] = `Bearer ${newToken}`;
-                        return axiosPrivate(prevRequest);
+                if (error?.response?.status === 401 && !prevRequest?.sent) {
+                    prevRequest.sent = true; // Prevent infinite loop
+                    const newAccessToken = await refresh();
+                    if (newAccessToken) {
+                        dispatch(updateToken(newAccessToken));
+                        prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                        return axiosPrivate(prevRequest); // Retry request with new token
                     }
                 }
                 return Promise.reject(error);
@@ -43,7 +43,7 @@ const useAxiosPrivate = () => {
             axiosPrivate.interceptors.request.eject(requestIntercept);
             axiosPrivate.interceptors.response.eject(responseIntercept);
         };
-    },[token, refresh, dispatch]);
+    }, [token, refresh, dispatch]);
 
     return axiosPrivate;
 };

@@ -119,7 +119,7 @@ const Signup = () => {
                     type="text"
                     id="first_name"
                     {...register("firstname")}
-                    className="border text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-200 text-white focus:ring-blue-500 focus:border-blue-500"
+                    className="border text-sm rounded-lg block w-full p-2.5 bg-surface-200 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter firstname"
                   />
                   {errors.firstname && (

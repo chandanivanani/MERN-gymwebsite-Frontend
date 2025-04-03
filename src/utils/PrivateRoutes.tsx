@@ -7,7 +7,8 @@ const PrivateRoutes = () => {
      const {user,token} = useSelector((state:RootState) => state.auth);
      const navigate = useNavigate();
      const role = user?.role;
-     console.log(role);
+   //   console.log(role);
+   //   console.log(token);
 
      useEffect(() => {
         if(!token) {

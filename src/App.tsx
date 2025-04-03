@@ -9,7 +9,8 @@ const LandingPage = React.lazy(() => import("./pages/home/LandingPage"));
 const SignUp = React.lazy(() => import("./pages/auth/Signup"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const ForgotPass = React.lazy(() => import("./pages/auth/ForgotPass"));
-const ErrorPage = React.lazy(() => import("./components/dashboard/common/ErrorPage"))
+const ErrorPage = React.lazy(() => import("./components/dashboard/common/ErrorPage"));
+const UserDashboard = React.lazy(() => import('./layout/UserDashboard'));
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot" element={<ForgotPass />} />
+
+          <Route element={<PrivateRoutes/>}>
+          <Route path="/user/*" element={<UserDashboard/>}></Route>
+          </Route>
 
         </Routes>
       </Suspense>
