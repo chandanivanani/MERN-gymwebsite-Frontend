@@ -23,7 +23,7 @@ export const fetchUserProfile = createAsyncThunk(
   async (axiosPrivate:any , { rejectWithValue }) => {
 
     try {
-      const response = await axiosPrivate.get("/user/profile");
+      const response = await axiosPrivate.get("user/profile");
       // console.log("user profileSlice", response.data.data);
       return response.data.data;
     } catch (error: any) {
@@ -57,9 +57,10 @@ export const uploadPhoto = createAsyncThunk(
   "user/uploadPhoto",
   async({formData,axiosPrivate} : {formData:FormData; axiosPrivate:any}, {rejectWithValue }) => {
     try {
-      const response = await axiosPrivate.post("user/uploadphoto", formData, {
+      const response = await axiosPrivate.put("user/uploadphoto", formData, {
         headers: {"Content-Type" : "multipart/form-data" },
       });
+      console.log("slice",response.data.data);
       return response.data.data;
     }catch(error:any) {
       return rejectWithValue(error.response?.data?.message || "Failed to upload photo");

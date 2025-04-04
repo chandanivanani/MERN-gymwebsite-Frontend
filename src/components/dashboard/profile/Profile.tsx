@@ -13,6 +13,7 @@ import {
   updateUserProfile,
 } from "../../../store/slices/userProfileSlice";
 import useAxiosPrivate from "../../../axios/useAxiosPrivate";
+import UpdateProfileImage from "./UpdateProfileImage";
 
 interface UserData {
   firstname: string;
@@ -87,7 +88,7 @@ const Profile = ({ isAdmin }: ProfileProps) => {
   return (
     <div className="mx-auto max-w-270">
       <div className="grid grid-cols-5 gap-8">
-        {/* UpdateProfilePhoto */}
+        <UpdateProfileImage profilePhoto= {userData?.profilePhoto as string || ''} onPhotoUpdateSuccess={handlePhotoUpdateSuccess} />
         <div className="col-span-5  xl:col-span-3">
           {/* section 1 */}
           <div className="border rounded-lg bg-surface-200 shadow-md border-surface-300">
